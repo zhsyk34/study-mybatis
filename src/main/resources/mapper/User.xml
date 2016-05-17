@@ -2,40 +2,125 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhsy.dao.UserDao">
 
-    <insert id="save" parameterType="User">
-        INSERT INTO user(name, age) VALUES (#{name}, #{age})
+    <!--table name-->
+    <sql id="entity">user</sql>
+    <!--primary key-->
+    <sql id="id">id</sql>
+    <!--all columns-->
+    <sql id="column">id, name, age</sql>
+
+    <insert id="save">
+        INSERT INTO
+        <include refid="entity"/>
+        (
+        <include refid="column"/>
+        )
+        VALUES
+        (NULL, #{name}, #{age})
     </insert>
 
-    <delete id="delete">
-        DELETE FROM user WHERE id = #{id}
+    <insert id="saves">
+        INSERT INTO
+        <include refid="entity"/>
+        (
+        <include refid="column"/>
+        )
+        VALUES
+        <foreach collection="list" item="user" separator=",">
+            (NULL, #{user.name}, #{user.age})
+        </foreach>
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="entity"/>
+        WHERE
+        <include refid="id"/>
+        = #{id}
     </delete>
 
-    <!-- UPDATE user SET age = #{age} where id = #{id}-->
-    <!--UPDATE user
+    <delete id="deleteByIds">
+        DELETE FROM
+        <include refid="entity"/>
+        WHERE id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- UPDATE user SET age = #{age} WHERE id = #{id}-->
+    <!--
+    UPDATE user
     <set>
         <if test="name != null">name = #{name},</if>
         <if test="age > 0">age = #{age}</if>
     </set>
-    WHERE id = #{id}-->
-    <update id="update" parameterType="User">
-        UPDATE user
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="name != null">name = #{name},</if>
-            <if test="age > 0">age = #{age},</if>
-        </trim>
-        WHERE id = #{id}
+    WHERE id = #{id}
+    -->
+    <!--
+    UPDATE user
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="name != null">name = #{name},</if>
+        <if test="age > 0">age = #{age},</if>
+    </trim>
+    WHERE id = #{id}
+    -->
+    <update id="update">
+        UPDATE
+        <include refid="entity"/>
+        SET
+        name = #{name}, age = #{age}
+        WHERE
+        <include refid="id"/>
+        = #{id}
     </update>
 
-    <select id="find" resultType="User" parameterType="int">
-        SELECT * FROM user WHERE id = #{id}
+    <update id="updates">
+        <foreach collection="list" item="entity" separator=";">
+            UPDATE
+            <include refid="entity"/>
+            <set>
+                test=${entity.test} + 1
+            </set>
+            WHERE id = ${entity.id}
+        </foreach>
+    </update>
+
+    <select id="findById" resultType="User">
+        SELECT * FROM
+        <include refid="entity"/>
+        WHERE
+        <include refid="id"/>
+        = #{id}
     </select>
 
     <select id="findAll" resultType="User">
-        SELECT * FROM user WHERE 1 = 1;
+        SELECT * FROM
+        <include refid="entity"/>
+        ORDER BY
+        <include refid="id"/>
+        DESC
     </select>
 
-    <select id="findByPage" resultType="User">
-        SELECT * FROM user ORDER BY id DESC limit #{offset}, #{limit}
+    <select id="findInterval" resultType="User">
+        SELECT * FROM
+        <include refid="entity"/>
+        ORDER BY
+        <include refid="id"/>
+        DESC
+        limit #{0}, #{1}
+    </select>
+
+    <select id="count" resultType="int" parameterType="map">
+        SELECT COUNT(*) FROM
+        <include refid="entity"/>
+        WHERE
+        <foreach collection="map" separator="AND" index="key" item="value">
+            #{key} #{value}
+        </foreach>
+        ORDER BY
+        <include refid="id"/>
+        DESC
     </select>
 
 </mapper>

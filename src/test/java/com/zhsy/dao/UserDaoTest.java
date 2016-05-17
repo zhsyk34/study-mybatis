@@ -7,9 +7,13 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.Resource;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import javax.annotation.Resource;
 
 /**
  * Created by Archimedes on 2016/5/16.
@@ -26,30 +30,60 @@ public class UserDaoTest {
         User user = new User();
         user.setName("chx");
         user.setAge(34);
-        int count = userDao.save(user);
-        System.out.println(count);
+        int result = userDao.save(user);
+        System.out.println(result);
     }
 
+    @Test
+    public void saves() {
+        List<User> users = new ArrayList<>();
+        User user;
+        for (int i = 1; i < 5; i++) {
+            user = new User();
+            user.setName("name" + i);
+            user.setAge(new Random().nextInt(100));
+            users.add(user);
+        }
+
+        int result = userDao.saves(users);
+        System.out.println(result);
+    }
+
+    // TODO: 2016/5/17
     @Test
     public void update() throws Exception {
-        User user = userDao.find(3);
+        User user = userDao.findById(3);
         user.setAge(1111);
         user.setName("xyzZ");
-        int change = userDao.update(user);
-        System.out.println(change);
+        int result = userDao.update(user);
+        System.out.println(result);
+    }
+
+    //TODO
+    @Test
+    public void updates() throws Exception {
+        List<User> userList = new ArrayList<>();
+        userDao.updates(userList);
     }
 
     @Test
-    public void delete() throws Exception {
-        int change = userDao.delete(4);
-        System.out.println(change);
-        User user = userDao.find(4);
+    public void deleteById() throws Exception {
+        int result = userDao.deleteById(4);
+        System.out.println(result);
+        User user = userDao.findById(4);
         System.out.println(user);
     }
 
     @Test
-    public void find() throws Exception {
-        User user = userDao.find(1);
+    public void deleteByIds() throws Exception {
+        int[] ids = {7, 9, 11};
+        int result = userDao.deleteByIds(ids);
+        System.out.println(result);
+    }
+
+    @Test
+    public void findById() throws Exception {
+        User user = userDao.findById(1);
         System.out.println(user);
     }
 
@@ -62,10 +96,19 @@ public class UserDaoTest {
     }
 
     @Test
-    public void findByPage() throws Exception {
-        List<User> userList = userDao.findByPage(0, 3);
+    public void findInterval() throws Exception {
+        List<User> userList = userDao.findInterval(0, 3);
         for (User user : userList) {
             System.out.println(user);
         }
+    }
+
+    //TODO: 2016/5/17
+    @Test
+    public void count() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        map.put("age = ", "32");
+        int count = userDao.count(map);
+        System.out.println("count: " + count);
     }
 }

@@ -3,7 +3,7 @@ CREATE TABLE user(
   name VARCHAR(20) NOT NULL,
   age INT NOT NULL,
   PRIMARY KEY (id)
-);
+)ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=UTF8;
 
 INSERT INTO user(id, name, age) VALUES
 (1,'zsy',32),
