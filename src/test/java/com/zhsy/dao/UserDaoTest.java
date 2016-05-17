@@ -1,5 +1,6 @@
 package com.zhsy.dao;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import com.zhsy.entity.User;
 
 import org.junit.Test;
@@ -98,9 +99,7 @@ public class UserDaoTest {
     @Test
     public void findInterval() throws Exception {
         List<User> userList = userDao.findInterval(0, 3);
-        for (User user : userList) {
-            System.out.println(user);
-        }
+        userList.forEach(user -> System.out.println(user));
     }
 
     //TODO: 2016/5/17
@@ -110,5 +109,14 @@ public class UserDaoTest {
         map.put("age = ", "32");
         int count = userDao.count(map);
         System.out.println("count: " + count);
+    }
+
+    @Test
+    public void test() {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
+        }
+        list.forEach(i -> System.out.println(i));
     }
 }
