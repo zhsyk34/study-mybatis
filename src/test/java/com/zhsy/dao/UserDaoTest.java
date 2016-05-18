@@ -64,7 +64,18 @@ public class UserDaoTest {
     @Test
     public void updates() throws Exception {
         List<User> userList = new ArrayList<>();
-        userDao.updates(userList);
+        for (int i = 1; i < 5; i++) {
+            User user = userDao.findById(i);
+            if (user == null) {
+                continue;
+            }
+            user.setName("update_name" + i);
+            user.setAge(new Random().nextInt(100));
+            userList.add(user);
+        }
+        userList.forEach(user -> {
+            userDao.updates(userList);
+        });
     }
 
     @Test
@@ -111,12 +122,4 @@ public class UserDaoTest {
         System.out.println("count: " + count);
     }
 
-    @Test
-    public void test() {
-        List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(i);
-        }
-        list.forEach(i -> System.out.println(i));
-    }
 }
