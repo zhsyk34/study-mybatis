@@ -48,7 +48,6 @@
         </foreach>
     </delete>
 
-    <!-- UPDATE user SET age = #{age} WHERE id = #{id}-->
     <!--
     UPDATE user
     <set>
@@ -76,13 +75,24 @@
     </update>
 
     <update id="updates">
-        <foreach collection="list" item="entity" separator=";">
-            UPDATE
-            <include refid="entity"/>
-            <set>
-                test=${entity.test} + 1
-            </set>
-            WHERE id = ${entity.id}
+        UPDATE
+        <include refid="entity"/>
+        SET
+        name = CASE
+        <include refid="id"/>
+        <foreach collection="list" item="user">
+            WHEN #{user.id} THEN #{user.name}
+        </foreach>
+        END,
+        age = CASE
+        <include refid="id"/>
+        <foreach collection="list" item="user">
+            WHEN #{user.id} THEN #{user.age}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="list" item="user" open="(" separator="," close=")">
+            #{user.id}
         </foreach>
     </update>
 
@@ -111,16 +121,18 @@
         limit #{0}, #{1}
     </select>
 
-    <select id="count" resultType="int" parameterType="map">
+    <!--$ #的区别-->
+    <!--ognl {数组:array,List:list,String&base type:_parameter,map:parameter}-->
+    <!--ognl foreach 遍历时的取值,array[index],list[index],_parameter.key/key-->
+    <select id="count" resultType="int">
         SELECT COUNT(*) FROM
         <include refid="entity"/>
+        <if test="_parameter != null and !_parameter.isEmpty()">
         WHERE
-        <foreach collection="map" separator="AND" index="key" item="value">
-            #{key} #{value}
+        <foreach collection="_parameter" separator="AND" index="key" item="value">
+            ${key} #{value}
         </foreach>
-        ORDER BY
-        <include refid="id"/>
-        DESC
+        </if>
     </select>
 
 </mapper>

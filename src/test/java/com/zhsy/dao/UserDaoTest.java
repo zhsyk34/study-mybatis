@@ -50,12 +50,11 @@ public class UserDaoTest {
         System.out.println(result);
     }
 
-    // TODO: 2016/5/17
     @Test
     public void update() throws Exception {
         User user = userDao.findById(3);
         user.setAge(1111);
-        user.setName("xyzZ");
+        user.setName("update_one");
         int result = userDao.update(user);
         System.out.println(result);
     }
@@ -64,26 +63,26 @@ public class UserDaoTest {
     @Test
     public void updates() throws Exception {
         List<User> userList = new ArrayList<>();
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < 3; i++) {
             User user = userDao.findById(i);
             if (user == null) {
                 continue;
             }
-            user.setName("update_name" + i);
-            user.setAge(new Random().nextInt(100));
+            user.setName("name" + i);
+            user.setAge(55);
             userList.add(user);
         }
-        userList.forEach(user -> {
-            userDao.updates(userList);
-        });
+        userList.forEach((user) -> System.out.println(user));
+
+        System.out.println("begin update batch...");
+        int result = userDao.updates(userList);
+        System.out.println(result);
     }
 
     @Test
     public void deleteById() throws Exception {
         int result = userDao.deleteById(4);
         System.out.println(result);
-        User user = userDao.findById(4);
-        System.out.println(user);
     }
 
     @Test
@@ -102,9 +101,7 @@ public class UserDaoTest {
     @Test
     public void findAll() throws Exception {
         List<User> userList = userDao.findAll();
-        for (User user : userList) {
-            System.out.println(user);
-        }
+        userList.forEach(user -> System.out.println(user));
     }
 
     @Test
@@ -113,12 +110,14 @@ public class UserDaoTest {
         userList.forEach(user -> System.out.println(user));
     }
 
-    //TODO: 2016/5/17
+    //#自动添加引号 $直接输出...
     @Test
     public void count() throws Exception {
         Map<String, Object> map = new HashMap<>();
-        map.put("age = ", "32");
+//        map.put("name like", "'n%'");//..
+        map.put("age > ", "2");
         int count = userDao.count(map);
+
         System.out.println("count: " + count);
     }
 
