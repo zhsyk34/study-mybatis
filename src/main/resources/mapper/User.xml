@@ -26,12 +26,20 @@
         <include refid="column"/>
         )
         VALUES
-        <foreach collection="list" item="user" separator=",">
-            (NULL, #{user.name}, #{user.age})
+        <foreach collection="list" item="entity" separator=",">
+            (NULL, #{entity.name}, #{entity.age})
         </foreach>
     </insert>
 
     <delete id="deleteById">
+        DELETE FROM
+        <include refid="entity"/>
+        WHERE
+        <include refid="id"/>
+        = #{id}
+    </delete>
+
+    <delete id="deleteByEntity">
         DELETE FROM
         <include refid="entity"/>
         WHERE
@@ -45,6 +53,15 @@
         WHERE id IN
         <foreach collection="array" item="id" open="(" separator="," close=")">
             #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByEntitys">
+        DELETE FROM
+        <include refid="entity"/>
+        WHERE id IN
+        <foreach collection="list" item="entity" open="(" separator="," close=")">
+            #{entity.id}
         </foreach>
     </delete>
 
@@ -80,19 +97,19 @@
         SET
         name = CASE
         <include refid="id"/>
-        <foreach collection="list" item="user">
-            WHEN #{user.id} THEN #{user.name}
+        <foreach collection="list" item="entity">
+            WHEN #{entity.id} THEN #{entity.name}
         </foreach>
         END,
         age = CASE
         <include refid="id"/>
-        <foreach collection="list" item="user">
-            WHEN #{user.id} THEN #{user.age}
+        <foreach collection="list" item="entity">
+            WHEN #{entity.id} THEN #{entity.age}
         </foreach>
         END
         WHERE id IN
-        <foreach collection="list" item="user" open="(" separator="," close=")">
-            #{user.id}
+        <foreach collection="list" item="entity" open="(" separator="," close=")">
+            #{entity.id}
         </foreach>
     </update>
 
@@ -128,10 +145,10 @@
         SELECT COUNT(*) FROM
         <include refid="entity"/>
         <if test="_parameter != null and !_parameter.isEmpty()">
-        WHERE
-        <foreach collection="_parameter" separator="AND" index="key" item="value">
-            ${key} #{value}
-        </foreach>
+            WHERE
+            <foreach collection="_parameter" separator="AND" index="key" item="value">
+                ${key} #{value}
+            </foreach>
         </if>
     </select>
 

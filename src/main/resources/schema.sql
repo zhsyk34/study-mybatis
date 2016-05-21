@@ -5,8 +5,38 @@ CREATE TABLE user(
   PRIMARY KEY (id)
 )ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=UTF8;
 
-INSERT INTO user(id, name, age) VALUES
-(1,'zsy',32),
-(2,'cjj',32),
-(3,'crg',33);
+CREATE TABLE role(
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(20) NOT NULL,
+  PRIMARY KEY (id)
+)ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=UTF8;
+
+CREATE TABLE userrole(
+  id INT NOT NULL AUTO_INCREMENT,
+  userid INT NOT NULL,
+  roleid INT NOT NULL,
+  PRIMARY KEY (id)
+)ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=UTF8;
+
+ALTER TABLE userrole ADD CONSTRAINT fk_uid FOREIGN KEY(userid) REFERENCES user(id);
+ALTER TABLE userrole ADD CONSTRAINT fk_rid FOREIGN KEY(roleid) REFERENCES user(id);
+
+INSERT INTO user(name, age) VALUES
+('zsy',32),
+('cjj',32),
+('crg',33);
+
+INSERT INTO role(name) VALUES
+('高级玩家'),
+('超级玩家'),
+('骨灰级玩家');
+
+INSERT INTO userrole(userid,roleid) VALUES
+(1,1),
+(1,3),
+(2,1),
+(2,2),
+(3,1),
+(3,2),
+(3,3);
 
