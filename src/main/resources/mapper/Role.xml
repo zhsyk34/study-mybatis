@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhsy.dao.UserDao">
+<mapper namespace="com.zhsy.dao.RoleDao">
 
     <!--table name-->
-    <sql id="entity">user</sql>
+    <sql id="entity">role</sql>
     <!--primary key-->
     <sql id="id">id</sql>
     <!--all columns-->
-    <sql id="column">id, name, age</sql>
+    <sql id="column">id, name</sql>
 
     <insert id="save">
         INSERT INTO
@@ -16,7 +16,7 @@
         <include refid="column"/>
         )
         VALUES
-        (NULL, #{name}, #{age})
+        (NULL, #{name})
     </insert>
 
     <insert id="saves">
@@ -27,7 +27,7 @@
         )
         VALUES
         <foreach collection="list" item="entity" separator=",">
-            (NULL, #{entity.name}, #{entity.age})
+            (NULL, #{entity.name})
         </foreach>
     </insert>
 
@@ -65,27 +65,11 @@
         </foreach>
     </delete>
 
-    <!--
-    UPDATE user
-    <set>
-        <if test="name != null">name = #{name},</if>
-        <if test="age > 0">age = #{age}</if>
-    </set>
-    WHERE id = #{id}
-    -->
-    <!--
-    UPDATE user
-    <trim prefix="SET" suffixOverrides=",">
-        <if test="name != null">name = #{name},</if>
-        <if test="age > 0">age = #{age},</if>
-    </trim>
-    WHERE id = #{id}
-    -->
     <update id="update">
         UPDATE
         <include refid="entity"/>
         SET
-        name = #{name}, age = #{age}
+        name = #{name}
         WHERE
         <include refid="id"/>
         = #{id}
@@ -100,12 +84,6 @@
         <foreach collection="list" item="entity">
             WHEN #{entity.id} THEN #{entity.name}
         </foreach>
-        END,
-        age = CASE
-        <include refid="id"/>
-        <foreach collection="list" item="entity">
-            WHEN #{entity.id} THEN #{entity.age}
-        </foreach>
         END
         WHERE id IN
         <foreach collection="list" item="entity" open="(" separator="," close=")">
@@ -113,7 +91,7 @@
         </foreach>
     </update>
 
-    <select id="findById" resultType="User">
+    <select id="findById" resultType="Role">
         SELECT * FROM
         <include refid="entity"/>
         WHERE
@@ -121,7 +99,7 @@
         = #{id}
     </select>
 
-    <select id="findAll" resultType="User">
+    <select id="findAll" resultType="Role">
         SELECT * FROM
         <include refid="entity"/>
         ORDER BY
@@ -129,7 +107,7 @@
         DESC
     </select>
 
-    <select id="findInterval" resultType="User">
+    <select id="findInterval" resultType="Role">
         SELECT * FROM
         <include refid="entity"/>
         ORDER BY
@@ -138,9 +116,6 @@
         limit #{0}, #{1}
     </select>
 
-    <!--$ #的区别-->
-    <!--ognl {数组:array,List:list,String&base type:_parameter,map:parameter}-->
-    <!--ognl foreach 遍历时的取值,array[index],list[index],_parameter.key/key-->
     <select id="count" resultType="int">
         SELECT COUNT(*) FROM
         <include refid="entity"/>
@@ -150,12 +125,6 @@
                 ${key} #{value}
             </foreach>
         </if>
-    </select>
-
-    <select id="findRoles" resultType="Role">
-        SELECT role.*
-        FROM user JOIN userrole ON user.id = userrole.userid JOIN role on userrole.roleid = role.id
-        WHERE user.id = #{id}
     </select>
 
 </mapper>
