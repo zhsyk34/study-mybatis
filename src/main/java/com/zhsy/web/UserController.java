@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * Created by Archimedes on 2016/5/22.
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/manage")
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
