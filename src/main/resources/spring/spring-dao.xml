@@ -9,7 +9,7 @@
     <!--配置整合MyBatis-->
 
     <!--1:数据库相关参数,读取配置文件-->
-    <!--不能正确加载-->
+    <!--不能正确加载 properties 文件key加前缀可解决问题?-->
     <context:property-placeholder location="classpath:jdbc.properties"/>
     <!--暂时替代方案(亦可直接在dataSource中赋值)-->
     <!--<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -20,10 +20,10 @@
     </bean>-->
     <!--2:数据库连接池配置-->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-        <property name="driverClass" value="${driver}"/>
-        <property name="jdbcUrl" value="${url}"/>
-        <property name="user" value="${username}"/>
-        <property name="password" value="${password}"/>
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
 
         <!--c3p0连接池的私有属性-->
         <property name="maxPoolSize" value="30"/>
